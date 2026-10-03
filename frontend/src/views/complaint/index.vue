@@ -38,6 +38,7 @@
         <tr>
           <th v-for="column in columns" :key="column">{{ column }}</th>
           <th>当前状态</th>
+          <th>不良反应台账待办</th>
           <th>可执行动作</th>
         </tr>
       </thead>
@@ -45,6 +46,12 @@
         <tr v-for="row in rows" :key="String(row.id)">
           <td v-for="column in columns" :key="column">{{ row[column] ?? '—' }}</td>
           <td>{{ row.status }}</td>
+          <td>
+            <RouterLink v-if="Number(row['ADR待办'] ?? 0) > 0" class="link" to="/adversereaction">
+              ADR待办 {{ row['ADR待办'] }} 条 →
+            </RouterLink>
+            <span v-else class="muted-text">—</span>
+          </td>
           <td class="row-actions">
             <button
               v-for="action in actions"
@@ -58,7 +65,7 @@
           </td>
         </tr>
         <tr v-if="!rows.length">
-          <td :colspan="columns.length + 2" class="empty-state">暂无质量投诉数据，可先登记投诉记录</td>
+          <td :colspan="columns.length + 3" class="empty-state">暂无质量投诉数据，可先登记投诉记录</td>
         </tr>
       </tbody>
     </table>
@@ -135,3 +142,7 @@ function reload() {
 
 onMounted(reload)
 </script>
+
+<style scoped>
+.muted-text { color: var(--muted); }
+</style>
